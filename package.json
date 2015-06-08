@@ -1,0 +1,19 @@
+{
+  "name": "UpdatePromise",
+  "version": "1.0.0",
+  "description": "test Update Promise service",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --ignore 'data/*.*' --delay 500ms server.js"
+  },
+  "author": "Patrick Morganson <patrickm@gtsservices.com>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.12.3",
+    "express-generator": "^4.12.1",
+    "js2xmlparser": "^0.1.9",
+    "mongoose": "^4.0.3",
+    "mssql": "^2.1.3"
+  }
+}

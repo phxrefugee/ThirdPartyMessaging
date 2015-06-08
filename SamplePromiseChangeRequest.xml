@@ -1,0 +1,53 @@
+<?xml version=”1.0” encoding=”utf-8”?>
+<PromiseChangeRequest xmlns=”http://www.updatepromise.com/xmlapi”>
+    <AccessKey>33e97066ad9bc9cb1a15ed86316da370913427a0</AccessKey>
+    <Elements>
+        <Element>
+            <Location>
+                <ID>COM123</ID>
+                <TimeZone>America/Los_Angeles</TimeZone>
+                <Name>California Glass – Los Angeles</Name>
+                <ShortName>California Glass</ShortName>
+                <Phone>7145551111</Phone>
+            </Location>
+            <Manager>
+                <ID>EMP123</ID>
+                <FirstName>Rudy</FirstName>
+                <LastName>Bagaman</LastName>
+                <Email>rbagaman@company.com</Email>
+            </Manager>
+            <Employee>
+                <ID>EMP234</ID>
+                <FirstName>Beebop</FirstName>
+                <LastName>Arboreman</LastName>
+                <Email>beebop@company.com</Email>
+                <MobilePhone>7145552222</MobilePhone>
+            </Employee>
+            <Customer>
+                <ID>CUS123</ID>
+                <FirstName>Stretch</FirstName>
+                <LastName>Thompson</LastName>
+                <Email>sthompson@home.com</Email>
+                <MobilePhone>7145553333</MobilePhone>
+                <HomePhone>7145554444</HomePhone>
+                <WorkPhone>7145556666</WorkPhone>
+                <CommPreference>EMAIL</CommPreference>
+            </Customer>
+            <Promise>
+                <ID>JOB123</ID>
+                <ThirdPartyName>Insurance Company, Inc.</ThirdPartyName>
+                <ThirdPartyID>CLAIM50000</ThirdPartyID>
+                <DateQuoted>2014-01-01T15:00:00</DateQuoted>
+                <DateAppointment>2014-01-02T20:00:00</DateAppointment>
+                <PartsStatus />
+                <WorkStatus>COMPLETABLE</WorkStatus>
+                <DateCompleted>2014-01-02T20:45:00</DateCompleted>
+                <VehicleMake>BMW</VehicleMake>
+                <DeleteFlag>0</DeleteFlag>
+            </Promise>
+        </Element>
+        <Element>
+            <!-- ... More elements here (if submitting a batch of promises) ... -->
+        </Element>
+    </Elements>
+</PromiseChangeRequest>
