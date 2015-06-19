@@ -16,6 +16,9 @@ var config = {
     sqlPassword: 'UN0tN0This!',
     sqlServer: 'localhost',
     sqlDatabase: 'MessagingQueue',
+    sqlOptions: {
+        instanceName: 'SQL2014'
+    },
     // geoName connection
     geoNamesHost: 'api.geonames.org',
     geoNamesPort: '80',

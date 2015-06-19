@@ -4,7 +4,10 @@ var sqlConfig = {
     user: config.sqlUser,
     password: config.sqlPassword,
     server: config.sqlServer,
-    database: config.sqlDatabase
+    database: config.sqlDatabase,
+    options: {
+        instanceName: config.sqlOptions.instanceName
+    }
 };
 
 exports.getChanges = function (next) {
@@ -56,4 +59,5 @@ exports.updateSqlRecord = function (data, status) {
         }
     });
 };
+
 

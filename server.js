@@ -144,9 +144,12 @@ setInterval(function (err){
 //);
 //
 //console.log('TimeZone: ' + timezone);
-var http = require( 'http' );
+/*
 var port = process.env.port || 1337;
+var http = require( 'http' );
 http.createServer(function ( req, res ) {
     res.writeHead(200, { 'Content-Type': 'text/plain'} );
-    res.end( 'Hello Billy!\n' );
-} ).listen( port );
+    res.write( 'Hello Billy Boy!\n' );
+    res.end();
+}).listen( port );
+*/

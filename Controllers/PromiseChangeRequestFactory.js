@@ -3,6 +3,7 @@
  */
 var mongoose = require('mongoose');
 var utilities = require('../Controllers/Utilities');
+var config = require('../config');
 
 // Schemas
 var CustomerSchema = require('./../schemas/Customer');
@@ -79,20 +80,19 @@ exports.buildObjects = function (accessKey, requests, status) {
         console.log('location...');
         var location = new LocationModel({
             ID: requestElement['LocationID'] + requestElement['BranchShortID'],
-            //TimeZone: requestElement['TimeZone'],
+            //TimeZone: 'Americas/Los_Angeles',
             Name: requestElement['BranchID'],
             ShortName: requestElement['BranchShortID'],
             Phone: utilities.stripNonNumericCharacters(requestElement['LocationPhone'])
         });
 
-        /*
+/*
          console.log('LatLong: ' + requestElement['Latitude'] + requestElement['Longitude']);
          utilities.getOlsonTimeZone(function (timezone) {
-         location.TimeZone = timezone;
-         console.log('location TZ: ' + timezone);
+             location.TimeZone = timezone;
+             console.log('location TZ: ' + timezone);
          }, requestElement['Latitude'], requestElement['Longitude'], config.geoNamesUser);
-         */
-
+*/
         console.log('promise...');
         var promise = new PromiseModel({
             ID: requestElement['PromiseID'],
@@ -132,7 +132,6 @@ exports.buildObjects = function (accessKey, requests, status) {
     });
     console.log(elementCollection.length + ' elements built');
 
-/*
     if (requests[0]) {
 
         console.log('LatLong: ' + requests[0]['Latitude'] + requests[0]['Longitude']);
@@ -143,7 +142,7 @@ exports.buildObjects = function (accessKey, requests, status) {
             return request;
         }, requests[0]['Latitude'], requests[0]['Longitude'], config.geoNamesUser);
     }
-*/
+
     return request;
 };
 
