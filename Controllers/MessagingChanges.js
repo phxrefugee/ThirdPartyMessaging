@@ -10,6 +10,7 @@ var sqlConfig = {
     }
 };
 
+/*
 exports.getChanges = function (next) {
     console.log('calling MessagingChanges.GetChanges()...');
     var conn = new sql.Connection(sqlConfig, function (err) {
@@ -35,7 +36,9 @@ exports.getChanges = function (next) {
         }
     });
 };
+*/
 
+/*
 exports.updateSqlRecord = function (data, status) {
     console.log('calling MessagingChanges.UpdateRecord()...');
     var conn = new sql.Connection(sqlConfig, function (err) {
@@ -59,5 +62,6 @@ exports.updateSqlRecord = function (data, status) {
         }
     });
 };
+*/
 
 

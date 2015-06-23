@@ -24,7 +24,7 @@ var config = {
     geoNamesPort: '80',
     geoNamesUser: 'patrickm',
     // polling frequency
-    pollingInterval: 10000 // milliseconds between calls
+    pollingInterval: 30000 // milliseconds between calls
 };
 
 module.exports = config;

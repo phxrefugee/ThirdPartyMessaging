@@ -7,7 +7,7 @@ var promiseRequest = new promiseChangeRequestSchema({
 //    _id: false,
     __v: false,
     AccessKey: String,
-    RequestStatus: '',
+    RequestStatus: Number,
     Elements: {
         Element: [element]
     }

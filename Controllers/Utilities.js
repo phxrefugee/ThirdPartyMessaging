@@ -20,9 +20,9 @@ exports.getOlsonTimeZone = function (next, lat, long, user) {
             output += chunk;
         });
         res.on('end', function () {
-            console.log('Full output: ' + output);
+            //console.log('Full output: ' + output);
             var parsed = JSON.parse(output);
-            console.log('Parsed TZ: ' + parsed.timezoneId);
+            //console.log('Parsed TZ: ' + parsed.timezoneId);
             next(parsed.timezoneId);
         });
     });
@@ -47,10 +47,9 @@ exports.zeroPad = function (num, numZeros) {
     return zeroString+n;
 };
 
-exports.stripNonNumericCharacters = function (inputString) {
-    if (inputString)
-        return inputString.replace(/\D/g,'');
+exports.stripNonNumericCharacters = function (input) {
+    if (input)
+        return input.toString().replace(/\D/g,'');
     else return '';
 };
-
 

@@ -1,13 +1,30 @@
 /* jslint node: true */
 
-var https = require('https');
-var mongoose = require('mongoose');
 var config = require('./config');
+var utilities = require('./Controllers/Utilities');
+var promise = require('./Controllers/PromiseChangeRequest');
+var changes = require('./Controllers/MessagingChanges');
+
+var express = require('express');
+
+var http = require('http');
+var https = require('https');
+var path = require('path');
+var fs = require('fs');
+var bodyParser = require('body-parser');
+var xmlparser = require('express-xml-bodyparser');
+var favicon = require('serve-favicon');
+var cookieParser = require('cookie-parser');
+var errorHandler = require('errorhandler');
+var morganLogger = require('morgan');
+var app = express();
+
+var port = process.env.port || 1337;
+var sslport = process.env.port || 443;
+
+var mongoose = require('mongoose');
 mongoose.connect(config.mongoConnection);
 
-var promise = require('./Controllers/PromiseChangeRequest');
-
-var changes = require('./Controllers/MessagingChanges');
 
 var statusEnum = {
     Unsent: 0,
@@ -16,6 +33,76 @@ var statusEnum = {
     Failure: 3
 };
 
+app.set('port', port);
+app.set('sslport', sslport);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(morganLogger('dev'));
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(xmlparser());
+
+// development only
+if ('development' == app.get('env')) {
+    app.use(errorHandler());
+}
+
+app.use(express.static(path.join(__dirname, '/public')));
+
+var httpsOptions = {
+    pfx: fs.readFileSync('test/fixtures/keys/82727153-localhost.pfx'),
+    passphrase: '1qw2!QW@'
+    /*
+     key: fs.readFileSync('test/fixtures/keys/82727153-localhost.key'),
+     cert: fs.readFileSync('test/fixtures/keys/82727153-localhost.cert')
+     */
+};
+http.createServer(app).listen(app.get('port'), function ( req, res ) {
+    console.log('Express server listening on port ' + app.get('port'));
+});
+
+https.createServer(httpsOptions, app).listen(app.get('sslport'), function ( req, res ) {
+    console.log('Express server listening on port ' + app.get('sslport'));
+});
+
+app.post('/newmessages', function (req, res) {
+    //console.log('BODY: ' + req.body);
+    if (!req.body  || req.body === undefined || !Object.keys(req.body).length)
+        return res.status(400).send({message: "No body content found!"});
+
+    // TODO: does body contain valid data?
+
+    // convert results to Update Promise format
+    var promise = require('./Controllers/PromiseChangeRequest');
+    var factory = require('./Controllers/PromiseChangeRequestFactory');
+    var promiseChangeRequest = factory.formatJsonAsUpdatePromise(config.accessKey, 0, req.body);
+    //console.log('MSG: ' + promiseChangeRequest);
+    if (promiseChangeRequest.Elements.Element.length > 0) {
+        console.log ('Promises to send: ' + promiseChangeRequest.Elements.Element.length);
+        // convert lat/long to timezone and insert to Mongo
+        for (var i = 0; i < promiseChangeRequest.Elements.Element.length; i++) {
+            var element = promiseChangeRequest.Elements.Element[i];
+
+            utilities.getOlsonTimeZone(function (timezone) {
+                element.Location[0].TimeZone = timezone;
+                console.log('TZ: ' + timezone);
+                console.log('inner prop: ' + element.QueueID);
+                return element;
+            }, element.Location[0].Latitude, element.Location[0].Longitude, config.geoNamesUser);
+            console.log('outer prop: ' + element.QueueID);
+        }
+
+        promise.insertPromiseChangeRequest(promiseChangeRequest);
+    } else {
+        console.log('no records to insert');
+    }
+
+    res.status(200).send(true);
+});
+
+/*
 var responses = function (results, err) {
     'use strict';
     console.log('passing responses...');
@@ -37,25 +124,8 @@ var responses = function (results, err) {
         }
     }
 };
-
-
-//var data = js2xmlparser('PromiseChangeRequest', promise);
-//console.log(data);
-
-
-// save seed data to mongodb
-/*
-var seedData = require('./data/seedData');
-//console.log(seedData);
-seedData.save(function (err) {
-    if(err) {
-        console.error('Oops! ' + err.message);
-    }
-    else {
-        console.log('Successfully saved request!');
-    }
-});
 */
+
 
 var sendXML = function (data) {
     var today = new Date();
@@ -83,10 +153,10 @@ var sendXML = function (data) {
             if (msg.indexOf('<ResultCode>1</ResultCode>') > -1) {
                 // update document record
                 promise.updateMongoDocument(data._id, statusEnum.Success);
-                changes.updateSqlRecord(data, statusEnum.Success);
+                //changes.updateSqlRecord(data, statusEnum.Success);
                 console.log('Promise Change Request ' + data._id + ' succeeded');
-                console.log(data);
-                console.log(msg);
+                //console.log(data);
+                //console.log(msg);
            } else {
                 console.error(today.toUTCString() + ': ----------------------------- Error -----------------------------');
                 console.error(msg);
@@ -96,7 +166,7 @@ var sendXML = function (data) {
                 console.error();
                 // update document record
                 promise.updateMongoDocument(data._id, statusEnum.Failure);
-                changes.updateSqlRecord(data, statusEnum.Failure);
+                //changes.updateSqlRecord(data, statusEnum.Failure);
                 console.log('Promise Change Request ' + data._id + ' failed');
            }
         });
@@ -130,26 +200,9 @@ setInterval(function (err){
         else {
             var d = new Date();
             console.log('\n\n' + d.toISOString());
-            changes.getChanges(responses);
+            //changes.getChanges(responses);
             promise.getElements(queryResults);
         }
     }, config.pollingInterval // timer setting in milliseconds
 );
 
-//var utilities = require('./Controllers/Utilities');
-//var timezone = utilities.getOlsonTimeZone(function (tz) {
-//    console.log('tz: ' + tz);
-//    return tz;
-//    }, '45.45', '-122.7188', config.geoNamesUser
-//);
-//
-//console.log('TimeZone: ' + timezone);
-/*
-var port = process.env.port || 1337;
-var http = require( 'http' );
-http.createServer(function ( req, res ) {
-    res.writeHead(200, { 'Content-Type': 'text/plain'} );
-    res.write( 'Hello Billy Boy!\n' );
-    res.end();
-}).listen( port );
-*/

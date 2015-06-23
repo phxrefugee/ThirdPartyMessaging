@@ -5,6 +5,8 @@ var location = new LocationSchema({
     _id: false,
     ID: String,
     TimeZone: String,
+    Latitude: Number,
+    Longitude: Number,
     Name: String,
     ShortName: String,
     Phone: String

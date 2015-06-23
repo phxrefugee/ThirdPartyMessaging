@@ -58,12 +58,14 @@ exports.updateMongoDocument = function (idValue, isSuccess) {
     });
 };
 
+/*
 exports.convertToPromiseChangeRequest = function (next, accessKey, requests) {
     console.log('calling PromiseChangeRequest.ConvertAndInsert()... ');
     console.log('requests to build: ' + requests.length);
     var status = 0;
     var factory = require('./PromiseChangeRequestFactory');
-    var resultSet = factory.buildObjects(accessKey, requests, status);
+    //var resultSet = factory.buildObjects(accessKey, requests, status);
+    var resultSet = factory.formatJsonAsUpdatePromise(accessKey, requests, status);
     console.log('instantiating new PromiseChangeRequestModel...');
     //console.log(JSON.stringify(resultSet.Elements, undefined, 2));
     var promise = new PromiseChangeRequestModel({
@@ -83,11 +85,13 @@ exports.convertToPromiseChangeRequest = function (next, accessKey, requests) {
         next(promise);
     }
 };
+*/
 
 exports.insertPromiseChangeRequest = function (promiseChangeRequest) {
+    console.log('called insert...');
     var insert = promiseChangeRequest.save(function (err, raw) {
         if (err)
-            console.error('Error inserting document ' + promiseChangeRequest.Elements.Element.Promise.ID);
+            console.error('Error inserting document with QueueID: ' + promiseChangeRequest.Elements.Element.QueueID);
         else
             console.log('insert succeeded for _id: ' + raw._id);
         //console.log(JSON.stringify(raw, undefined, 2));
