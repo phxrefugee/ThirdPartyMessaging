@@ -81,7 +81,7 @@ exports.formatJsonAsUpdatePromise = function (accessKey, status, requestBody) {
                 //console.log('location...');
                 var location = new LocationModel({
                     ID: element[i].locationid + element[i].branchshortid,
-                    TimeZone: 'Americas/Los_Angeles',
+                    TimeZone: element[i].timezone,
                     Latitude: Number(element[i].latitude),
                     Longitude: Number(element[i].longitude),
                     Name: element[i].branchid,
@@ -96,6 +96,7 @@ exports.formatJsonAsUpdatePromise = function (accessKey, status, requestBody) {
                     ThirdPartyID: element[i].promiseclaimno,
                     DateQuoted: element[i].datequoted,
                     DateAppointment: element[i].dateappointment,
+                    // TODO: how to determine these values?
                     //PartsStatus: (null) ? 'DAMAGED' : '',
                     //WorkStatus: (null) ? 'UNCOMPLETABLE' : 'COMPLETABLE',
                     DateCompleted: element[i].datecompleted,

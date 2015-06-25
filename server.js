@@ -19,8 +19,8 @@ var errorHandler = require('errorhandler');
 var morganLogger = require('morgan');
 var app = express();
 
-var port = process.env.port || 1337;
-var sslport = process.env.port || 443;
+var port = process.env.port || config.httpPort;
+var sslport = process.env.port || config.httpsPort;
 
 var mongoose = require('mongoose');
 mongoose.connect(config.mongoConnection);
@@ -74,25 +74,14 @@ app.post('/newmessages', function (req, res) {
 
     // TODO: does body contain valid data?
 
-    // convert results to Update Promise format
     var promise = require('./Controllers/PromiseChangeRequest');
     var factory = require('./Controllers/PromiseChangeRequestFactory');
-    var promiseChangeRequest = factory.formatJsonAsUpdatePromise(config.accessKey, 0, req.body);
+
+    // convert results to Update Promise format
+    var promiseChangeRequest = factory.formatJsonAsUpdatePromise(config.accessKey, statusEnum.Unsent, req.body);
     //console.log('MSG: ' + promiseChangeRequest);
     if (promiseChangeRequest.Elements.Element.length > 0) {
         console.log ('Promises to send: ' + promiseChangeRequest.Elements.Element.length);
-        // convert lat/long to timezone and insert to Mongo
-        for (var i = 0; i < promiseChangeRequest.Elements.Element.length; i++) {
-            var element = promiseChangeRequest.Elements.Element[i];
-
-            utilities.getOlsonTimeZone(function (timezone) {
-                element.Location[0].TimeZone = timezone;
-                console.log('TZ: ' + timezone);
-                console.log('inner prop: ' + element.QueueID);
-                return element;
-            }, element.Location[0].Latitude, element.Location[0].Longitude, config.geoNamesUser);
-            console.log('outer prop: ' + element.QueueID);
-        }
 
         promise.insertPromiseChangeRequest(promiseChangeRequest);
     } else {
@@ -192,6 +181,8 @@ var queryResults = function (results, err) {
         }
     }
 };
+//promise.updateTimeZones();
+promise.getElements(queryResults);
 
 // run functions on a timer
 setInterval(function (err){
@@ -201,6 +192,7 @@ setInterval(function (err){
             var d = new Date();
             console.log('\n\n' + d.toISOString());
             //changes.getChanges(responses);
+            //promise.updateTimeZones();
             promise.getElements(queryResults);
         }
     }, config.pollingInterval // timer setting in milliseconds
