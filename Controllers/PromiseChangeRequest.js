@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 var PromiseChangeRequestSchema = require('./../schemas/PromiseChangeRequest');
 var PromiseChangeRequestModel = mongoose.model('PromiseChangeRequest', PromiseChangeRequestSchema, 'promisechangerequests');
-var factory = require('./PromiseChangeRequestFactory');
 var js2xmlparser = require("js2xmlparser");
 var utilities = require('./Utilities');
 var config = require('../config');
 
+/*
 exports.updateTimeZones = function (next) {
     // get all documents where TimeZone is empty or missing
     console.log('checking for updates...');
@@ -44,6 +44,7 @@ exports.updateTimeZones = function (next) {
     });
 
 };
+*/
 
 exports.getElements = function (next) {
     console.log('calling PromiseChangeRequest.GetElements()...');
@@ -100,35 +101,6 @@ exports.updateMongoDocument = function (idValue, isSuccess) {
     });
 };
 
-/*
-exports.convertToPromiseChangeRequest = function (next, accessKey, requests) {
-    console.log('calling PromiseChangeRequest.ConvertAndInsert()... ');
-    console.log('requests to build: ' + requests.length);
-    var status = 0;
-    var factory = require('./PromiseChangeRequestFactory');
-    //var resultSet = factory.buildObjects(accessKey, requests, status);
-    var resultSet = factory.formatJsonAsUpdatePromise(accessKey, requests, status);
-    console.log('instantiating new PromiseChangeRequestModel...');
-    //console.log(JSON.stringify(resultSet.Elements, undefined, 2));
-    var promise = new PromiseChangeRequestModel({
-        AccessKey: accessKey,
-        Elements: {
-            Element: []
-        },
-        RequestStatus: status
-    });
-    if (resultSet && resultSet.Elements.Element.length > 0) {
-        // push the elements to the array
-        console.log('Pushing ' + resultSet.Elements.Element.length + ' elements to Element array...');
-        for (var i = 0; i < resultSet.Elements.Element.length; i++) {
-            promise.Elements.Element.push(resultSet.Elements.Element[i]);
-        }
-        //console.log(JSON.stringify(promise, undefined, 2));
-        next(promise);
-    }
-};
-*/
-
 exports.insertPromiseChangeRequest = function (promiseChangeRequest) {
     console.log('called insert...');
     promiseChangeRequest.save(function (err, raw) {
@@ -136,6 +108,5 @@ exports.insertPromiseChangeRequest = function (promiseChangeRequest) {
             console.error('Error inserting document with QueueID: ' + promiseChangeRequest.Elements.Element.QueueID);
         else
             console.log('insert succeeded for _id: ' + raw._id);
-        //console.log(JSON.stringify(raw, undefined, 2));
     });
 };

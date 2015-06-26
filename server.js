@@ -1,9 +1,7 @@
 /* jslint node: true */
 
 var config = require('./config');
-var utilities = require('./Controllers/Utilities');
 var promise = require('./Controllers/PromiseChangeRequest');
-var changes = require('./Controllers/MessagingChanges');
 
 var express = require('express');
 
@@ -90,31 +88,6 @@ app.post('/newmessages', function (req, res) {
 
     res.status(200).send(true);
 });
-
-/*
-var responses = function (results, err) {
-    'use strict';
-    console.log('passing responses...');
-    //console.log(results);
-    if (err) {
-        console.error(err.message);
-    } else {
-        if (results) {
-            var accessKey = config.accessKey;
-            var promise = require('./Controllers/PromiseChangeRequest');
-            promise.convertToPromiseChangeRequest(function (promiseChangeRequest) {
-                    if (promiseChangeRequest.Elements.Element.length > 0) {
-                        console.log ('Promises to send: ' + promiseChangeRequest.Elements.Element.length);
-                        promise.insertPromiseChangeRequest(promiseChangeRequest);
-                    }
-                }, accessKey, results);
-        } else {
-            console.log('no records to insert');
-        }
-    }
-};
-*/
-
 
 var sendXML = function (data) {
     var today = new Date();

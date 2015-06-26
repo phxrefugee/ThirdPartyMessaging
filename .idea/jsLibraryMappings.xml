@@ -2,13 +2,11 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{UpdatePromise node_modules}" />
-    <file url="file://$PROJECT_DIR$/Controllers/MessagingChanges.js" libraries="{Node.js Globals}" />
     <file url="file://$PROJECT_DIR$/Controllers/PromiseChangeRequest.js" libraries="{Node.js Globals}" />
     <file url="file://$PROJECT_DIR$/Controllers/PromiseChangeRequestFactory.js" libraries="{Node.js Globals}" />
     <file url="file://$PROJECT_DIR$/Controllers/Utilities.js" libraries="{Node.js Globals}" />
     <file url="file://$PROJECT_DIR$/routes/index.js" libraries="{Node.js Globals}" />
     <file url="file://$PROJECT_DIR$/schemas/Promise.js" libraries="{Node.js v0.12.2 Core Modules}" />
     <file url="file://$PROJECT_DIR$/server.js" libraries="{Node.js Globals}" />
-    <file url="file://$PROJECT_DIR$/webserver.js" libraries="{Node.js Globals, Node.js v0.12.2 Core Modules}" />
   </component>
 </project>

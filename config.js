@@ -11,22 +11,18 @@ var config = {
     updatePromiseHost: 'test.updatepromise.com',
     updatePromisePort: '443',
     updatePromisePath: '/api/promise_api_glass.py',
-    // sql connection
-    sqlUser: 'sa',
-    sqlPassword: 'UN0tN0This!',
-    sqlServer: 'localhost',
-    sqlDatabase: 'MessagingQueue',
-    sqlOptions: {
-        instanceName: 'SQL2014'
-    },
+/*
     // geoName connection
     geoNamesHost: 'api.geonames.org',
     geoNamesPort: '80',
     geoNamesUser: 'patrickm',
-    // polling frequency
-    pollingInterval: 30000, // milliseconds between calls
+    */
+    // newMessages web service connection
     httpPort: 1337,
-    httpsPort: 443
+    httpsPort: 443,
+
+    // polling frequency
+    pollingInterval: 30000 // milliseconds between calls
 };
 
 module.exports = config;

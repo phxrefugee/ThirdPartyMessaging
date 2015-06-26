@@ -1,6 +1,7 @@
 /**
  * Created by PatrickM on 05/27/2015.
  */
+/*
 var config = require('../config');
 var http = require('http');
 
@@ -31,6 +32,7 @@ exports.getOlsonTimeZone = function (next, lat, long, user) {
     });
     req.end();
 };
+*/
 
 /*
  zeroPad function courtesy of coderjoe on StackOverflow
