@@ -50,12 +50,12 @@ if ('development' == app.get('env')) {
 app.use(express.static(path.join(__dirname, '/public')));
 
 var httpsOptions = {
-    pfx: fs.readFileSync('test/fixtures/keys/82727153-localhost.pfx'),
-    passphrase: '1qw2!QW@'
-    /*
-     key: fs.readFileSync('test/fixtures/keys/82727153-localhost.key'),
-     cert: fs.readFileSync('test/fixtures/keys/82727153-localhost.cert')
-     */
+    pfx: fs.readFileSync('test/fixtures/keys/updatepromiselocalhost.pfx'),
+    passphrase: ''
+     /*
+    key: fs.readFileSync('test/fixtures/keys/82727153-localhost.key'),
+    cert: fs.readFileSync('test/fixtures/keys/82727153-localhost.cert')
+    */
 };
 http.createServer(app).listen(app.get('port'), function ( req, res ) {
     console.log('Express server listening on port ' + app.get('port'));
@@ -66,7 +66,7 @@ https.createServer(httpsOptions, app).listen(app.get('sslport'), function ( req,
 });
 
 app.post('/newmessages', function (req, res) {
-    //console.log('BODY: ' + req.body);
+    //console.log('BODY: ' + JSON.stringify(req.body, null, 2));
     if (!req.body  || req.body === undefined || !Object.keys(req.body).length)
         return res.status(400).send({message: "No body content found!"});
 
@@ -117,7 +117,7 @@ var sendXML = function (data) {
                 promise.updateMongoDocument(data._id, statusEnum.Success);
                 //changes.updateSqlRecord(data, statusEnum.Success);
                 console.log('Promise Change Request ' + data._id + ' succeeded');
-                //console.log(data);
+                //console.log(xmlData);
                 //console.log(msg);
            } else {
                 console.error(today.toUTCString() + ': ----------------------------- Error -----------------------------');
@@ -128,7 +128,6 @@ var sendXML = function (data) {
                 console.error();
                 // update document record
                 promise.updateMongoDocument(data._id, statusEnum.Failure);
-                //changes.updateSqlRecord(data, statusEnum.Failure);
                 console.log('Promise Change Request ' + data._id + ' failed');
            }
         });

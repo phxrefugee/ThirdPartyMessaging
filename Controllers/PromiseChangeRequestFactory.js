@@ -89,6 +89,8 @@ exports.formatJsonAsUpdatePromise = function (accessKey, status, requestBody) {
                 });
 
                 //console.log('promise...');
+                console.log('PartsStatus: ' + element[i].isissuewithpart);
+                console.log('WorkStatus: ' + element[i].isunabletocompleteinstall);
                 var promise = new PromiseModel({
                     ID: element[i].promiseid,
                     ThirdPartyName: element[i].promiseinsname,
@@ -96,8 +98,8 @@ exports.formatJsonAsUpdatePromise = function (accessKey, status, requestBody) {
                     DateQuoted: element[i].datequoted,
                     DateAppointment: element[i].dateappointment,
                     // TODO: how to determine these values?
-                    //PartsStatus: (null) ? 'DAMAGED' : '',
-                    //WorkStatus: (null) ? 'UNCOMPLETABLE' : 'COMPLETABLE',
+                    PartsStatus: (element[i].isissuewithpart == 1) ? 'DAMAGED' : '',
+                    WorkStatus: (element[i].isunabletocompleteinstall == 1) ? 'UNCOMPLETABLE' : 'COMPLETABLE',
                     DateCompleted: element[i].datecompleted,
                     VehicleMake: element[i].vehiclemake,
                     DeleteFlag: element[i].deleteflag

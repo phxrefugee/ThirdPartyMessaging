@@ -1,6 +1,3 @@
-USE [GlasPacLX_2014]
-GO
-
 /****** Object:  StoredProcedure [usp_GetUpdatePromiseDataForDocument]    Script Date: 06/26/2015 07:23:19 AM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[usp_GetUpdatePromiseDataForDocument]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [usp_GetUpdatePromiseDataForDocument]
@@ -61,7 +58,8 @@ BEGIN
 		PromiseClaimNo = claim.ClaimNumber,
 		DateQuoted = doc.DocumentDateTime,
 		DateAppointment = inst.InstallationDate + inst.InstallationTime,
-		ReasonNotCompleted = inst.NotCompleteReasonID_FK,
+		IsIssueWithPart = inst.IsIssueWithPart,
+		IsUnableToCompleteInstall = inst.IsUnableToCompleteInstall,
 		DateCompleted = instlr.InstallerPunchOutTime,
 		VehicleMake = veh.Make,
 		DeleteFlag = doc.IsDeleted, 
@@ -115,7 +113,8 @@ BEGIN
 		doc.DocumentDateTime,
 		inst.InstallationDate,
 		inst.InstallationTime,
-		inst.NotCompleteReasonID_FK,
+		inst.IsIssueWithPart,
+		inst.IsUnableToCompleteInstall,
 		instlr.InstallerPunchOutTime,
 		veh.Make,
 		doc.IsDeleted

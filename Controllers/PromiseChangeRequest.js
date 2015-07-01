@@ -64,7 +64,7 @@ exports.getElements = function (next) {
                     // date fields must be in ISO8601 format, without milliseconds or timezone.
                     results[i].Elements.Element.forEach(function (element) {
                        if (element.Promise[0]) {
-                           var deleteFlag = (element.Promise[0].DeleteFlag ? 1 : 0);
+                           var deleteFlag = (element.Promise[0].DeleteFlag ? (element.Promise[0].DeleteFlag == 'true' ? 1 : 0) : 0);
                            var dateQuoted = (element.Promise[0].DateQuoted ? element.Promise[0].DateQuoted.toJSON() : '');
                            var dateAppointment = (element.Promise[0].DateAppointment ? element.Promise[0].DateAppointment.toJSON() : '');
                            var dateCompleted = (element.Promise[0].DateCompleted ? element.Promise[0].DateCompleted.toJSON() : '');
@@ -73,7 +73,6 @@ exports.getElements = function (next) {
                            element.Promise[0].DateQuoted = dateQuoted.substr(0, 19);
                            element.Promise[0].DateAppointment = dateAppointment.substr(0, 19);
                            element.Promise[0].DateCompleted = dateCompleted.substr(0, 19);
-                           // console.log(deleteFlag + '; ' + dateQuoted + '; ' + dateAppointment + '; ' + dateCompleted + '; ');
                        }
                     });
                     var data = results[i];

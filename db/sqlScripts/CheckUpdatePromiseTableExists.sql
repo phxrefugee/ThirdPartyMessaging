@@ -111,13 +111,9 @@ GO
 
 /****** Object:  Table [dbo].[UpdatePromiseQueue]    Script Date: 05/18/2015 09:23:00 ******/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePromiseQueue]') AND type in (N'U'))
-
 	/****** Object:  Table [dbo].[UpdatePromiseQueue]    Script Date: 05/18/2015 09:23:01 ******/
-	SET ANSI_NULLS ON
-	GO
-
-	SET QUOTED_IDENTIFIER ON
-	GO
+	BEGIN
+	
 	-- DROP TABLE [dbo].[UpdatePromiseQueue]
 	CREATE TABLE [dbo].[UpdatePromiseQueue](
 			QueueID int identity(1,1) NOT NULL,
@@ -128,8 +124,8 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Up
 			BranchShortID varchar(4) NULL,
 			BranchID varchar(20) NULL,
 			LocationPhone varchar(30) NULL,
-			Latitude decimal(18,8) NOT NULL, -- **
-			Longitude decimal(18,8) NOT NULL, -- **
+			Latitude decimal(18,8) NOT NULL,
+			Longitude decimal(18,8) NOT NULL,
 			TimeZone varchar(100) NULL, -- **
 			ManagerID varchar(20) NULL,
 			ManagerFirstName varchar(50) NOT NULL, -- **
@@ -153,7 +149,8 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Up
 			PromiseClaimNo varchar(30) NULL,
 			DateQuoted DateTime NOT NULL, -- **
 			DateAppointment DateTime NULL,
-			ReasonNotCompleted int NULL,
+			IsIssueWithPart bit NULL,
+			IsUnableToCompleteInstall bit NULL,
 			DateCompleted DateTime NULL,
 			VehicleMake varchar(20) NOT NULL, -- **
 			DeleteFlag bit NOT NULL,  -- **
@@ -162,6 +159,35 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Up
 			LastUpdated DateTime NOT NULL DEFAULT(GETDATE())
 	) ON [PRIMARY]
 	-- ** Required by Update Promise
+	END
+GO 
+
+IF  EXISTS (SELECT * FROM sys.triggers WHERE object_id = OBJECT_ID(N'[dbo].[trg_MessagingQueueUpdatePromiseQueue]'))
+	DROP TRIGGER [dbo].[trg_MessagingQueueUpdatePromiseQueue]
+GO
+-- =============================================
+-- Author:		Patrick Morganson
+-- Create date: 24 June, 2015
+-- Description:	trigger to call usp_SetTimeZoneFromLatLong stored procedure 
+-- that will call web service to populate TimeZone field
+-- =============================================
+CREATE TRIGGER dbo.trg_MessagingQueueUpdatePromiseQueue 
+	ON  dbo.UpdatePromiseQueue 
+	AFTER INSERT, UPDATE
+AS 
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DECLARE @queueID INT
+
+	SELECT @queueID = inserted.QueueID
+	FROM inserted WHERE ISNULL(inserted.TimeZone, '') = ''
+
+	IF (@queueID IS NOT NULL) 
+	EXEC dbo.usp_SetTimeZoneFromLatLong @queueID
+END
 
 GO
 

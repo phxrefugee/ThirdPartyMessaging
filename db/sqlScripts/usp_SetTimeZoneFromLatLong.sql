@@ -1,6 +1,3 @@
-USE [MessagingQueue]
-GO
-
 /****** Object:  StoredProcedure [usp_SetTimeZoneFromLatLong]    Script Date: 06/18/2015 13:59:36 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[usp_SetTimeZoneFromLatLong]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [usp_SetTimeZoneFromLatLong]
@@ -92,85 +89,5 @@ UPDATE UpdatePromiseQueue SET SubmissionResult = 0 WHERE QueueID = (select MAX(Q
 UPDATE UpdatePromiseQueue SET DateCompleted = '2015-06-21 17:43:03.593' WHERE QueueID = 2
 UPDATE UpdatePromiseQueue SET TimeZone = '', SubmissionResult = 0 WHERE QueueID = 3
 TRUNCATE TABLE UpdatePromiseQueue
-
-INSERT INTO UpdatePromiseQueue
-      ([DatabaseName]
-      ,[DocumentGUID]
-      ,[DocumentNumber]
-      ,[LocationID]
-      ,[BranchShortID]
-      ,[BranchID]
-      ,[LocationPhone]
-      ,[Latitude]
-      ,[Longitude]
-      ,[TimeZone]
-      ,[ManagerID]
-      ,[ManagerFirstName]
-      ,[ManagerLastName]
-      ,[ManagerEmail]
-      ,[EmployeeID]
-      ,[EmployeeFirstName]
-      ,[EmployeeLastName]
-      ,[EmployeeEmail]
-      ,[EmployeePhone]
-      ,[CustomerID]
-      ,[CustomerFirstName]
-      ,[CustomerLastName]
-      ,[CustomerEmail]
-      ,[CustomerMobile]
-      ,[CustomerHome]
-      ,[CustomerWork]
-      ,[CommPreference]
-      ,[PromiseInsName]
-      ,[PromiseClaimNo]
-      ,[DateQuoted]
-      ,[DateAppointment]
-      ,[ReasonNotCompleted]
-      ,[DateCompleted]
-      ,[VehicleMake]
-      ,[DeleteFlag]
-      ,[InstallerOrder]
-      ,[SubmissionResult]
-      ,[LastUpdated]
-)
-SELECT 'GlasPacLX_2014'
-	   ,'23E29517-7417-486E-B756-5037FA0ED593'
-	   ,'Q001033'
-	   ,'9999'
-	   ,'PDX'
-	   ,'Branch 1'
-	   ,'(503) 244-1245'
-	   ,45.45682000
-	   ,-122.71880000
-	   ,NULL--'America/Los_Angeles'
-	   ,'Cindi'
-	   ,'Cindi'
-	   ,'Johnson'
-	   ,'cindi@branchmgr.com'
-	   ,'Larry'
-	   ,'Larry'
-	   ,'Small'
-	   ,'larry@emp.com'
-	   ,'(503) 656-2301'
-	   ,'BrandonB'
-	   ,'Brandon'
-	   ,'Builders'
-	   ,'BBuilders@demoemail.com'
-	   ,'(503) 654-5858'
-	   ,NULL	
-	   ,NULL	
-	   ,3	
-	   ,'Allstate Insurance Company(Lynx)'
-	   ,''
-	   ,'2015-06-23 16:24:09.000'
-	   ,'2015-06-24 10:00:00.000'
-	   ,NULL	
-	   ,'2015-06-24 11:00:00.000'
-	   ,'BMW'
-	   ,0	
-	   ,0	
-	   ,0	
-	   ,'2015-06-24 09:29:02.463'
-
 
 */

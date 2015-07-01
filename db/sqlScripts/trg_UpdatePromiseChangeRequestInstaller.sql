@@ -35,7 +35,7 @@ BEGIN
 	INNER JOIN DocumentInstallation install ON old.DocumentInstallationGUID_FK = install.DocumentInstallationGUID
 	INNER JOIN Document doc ON doc.DocumentInstallationGUID_FK = old.DocumentInstallationGUID_FK 
 	INNER JOIN inserted ON old.DocumentInstallationGUID_FK = inserted.DocumentInstallationGUID_FK AND inserted.InstallerOrder = 0 -- only get primary installer
-	INNER JOIN deleted ON inserted.DocumentInstallationGUID_FK = deleted.DocumentInstallationGUID_FK AND deleted.InstallerOrder = 0 
+	LEFT JOIN deleted ON inserted.DocumentInstallationGUID_FK = deleted.DocumentInstallationGUID_FK AND deleted.InstallerOrder = 0 
 	WHERE inserted.InstallerPunchOutTime <> deleted.InstallerPunchOutTime
 	   OR inserted.InstallerOrder <> deleted.InstallerOrder
 	   OR inserted.DocumentInstallerGUID <> deleted.DocumentInstallerGUID
@@ -48,11 +48,20 @@ BEGIN
 	END
 	ELSE
 	BEGIN
+		DECLARE @queueID int
+		-- get the latest record for this document
+		SELECT TOP 1 @queueID = QueueID from [localhost\SQL2014].MessagingQueue.dbo.UpdatePromiseQueue
+		WHERE DocumentGUID = @DocumentGUID --AND @newUpdated > LastUpdated
+		ORDER BY LastUpdated DESC
+		PRINT 'QueueID = ' + CAST(@queueID AS VARCHAR(10))
+		SELECT QueueID = @queueID
+
 		-- if the timestamp on DocumentInstallation record is less than 1 second difference, 
+		-- and we already have a Messaging Queue record for the Document GUID,
 		-- update the existing Messaging Queue record. 
-		-- otherwise, insert a new Messaging Queue record
+		-- otherwise, insert a new Messaging Queue record.
 		PRINT 'check time difference'
-		IF (DATEDIFF(SS, @priorUpdated, @newUpdated) >	1)
+		IF (DATEDIFF(SS, @priorUpdated, @newUpdated) >	1 OR NOT EXISTS(SELECT @queueID))
 		BEGIN
 			PRINT 'Inserting new record'
 			INSERT INTO [localhost\SQL2014].MessagingQueue.dbo.UpdatePromiseQueue -- from dbo.DocumentInstaller
@@ -87,7 +96,9 @@ BEGIN
 				PromiseClaimNo, 
 				DateQuoted, 
 				DateAppointment, 
-				ReasonNotCompleted, 
+				IsIssueWithPart,
+				IsUnableToCompleteInstall,
+				--ReasonNotCompleted, 
 				DateCompleted, 
 				VehicleMake, 
 				DeleteFlag, 
@@ -98,13 +109,6 @@ BEGIN
 		ELSE
 		BEGIN
 			PRINT 'Updating existing record with timestamp ' + CAST(@priorUpdated AS varchar(100))
-			DECLARE @queueID int
-			-- get the latest record for this document
-			SELECT TOP 1 @queueID = QueueID from [localhost\SQL2014].MessagingQueue.dbo.UpdatePromiseQueue
-			WHERE DocumentGUID = @DocumentGUID --AND @newUpdated > LastUpdated
-			ORDER BY LastUpdated DESC
-			PRINT 'QueueID = ' + CAST(@queueID AS VARCHAR(10))
-			SELECT QueueID = @queueID
 			-- create a temp table to hold sproc results
 			CREATE TABLE [dbo].[tmpUpdatePromiseQueue](
 					--QueueID int identity(1,1) NOT NULL,
@@ -139,7 +143,9 @@ BEGIN
 					PromiseClaimNo varchar(30) NULL,
 					DateQuoted DateTime NOT NULL, -- **
 					DateAppointment DateTime NULL,
-					ReasonNotCompleted int NULL,
+					IsIssueWIthPart bit NULL,
+					IsUnableToCompleteInstall bit NULL,
+					--ReasonNotCompleted int NULL,
 					DateCompleted DateTime NULL,
 					VehicleMake varchar(20) NOT NULL, -- **
 					DeleteFlag bit NOT NULL,  -- **
@@ -160,7 +166,9 @@ BEGIN
 				EmployeeEmail = tmp.EmployeeEmail,
 				EmployeePhone = tmp.EmployeePhone,
 				DateAppointment = tmp.DateAppointment,
-				ReasonNotCompleted = tmp.ReasonNotCompleted,
+				IsIssueWIthPart = tmp.IsIssueWithPart,
+				IsUnableToCompleteInstall = tmp.IsUnableToCompleteInstall,
+				--ReasonNotCompleted = tmp.ReasonNotCompleted,
 				DateCompleted = tmp.DateCompleted,
 				LastUpdated = GETDATE()
 			FROM tmpUpdatePromiseQueue as tmp
