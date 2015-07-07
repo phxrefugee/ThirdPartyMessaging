@@ -36,6 +36,7 @@ SQL scripts
 --------------
 * All SQL scripts are located in /db/sqlScripts folder
 * SQL scripts to be executed on SQL instance located on same server as GlasPacLX database
+
 1. CheckUpdatePromiseTableExists.sql
 2. usp_SetTimeZoneFromLatLong.sql
 3. usp_SendNewUpdatePromiseMessagesToWS.sql \*
@@ -45,6 +46,7 @@ SQL scripts
 \* confirm URL to web service call is correct in this script
 
 SQL scripts to be executed on GlasPacLX database
+
 1. usp_GetUpdatePromiseDataForDocument.sql
 2. trg_UpdatePromiseChangeRequestInstaller.sql \*\*
 3. trg_UpdatePromiseChangeRequestInstallation.sql \*\*
